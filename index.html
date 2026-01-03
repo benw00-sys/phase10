@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 10 Scorer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #764ba2;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+        }
+
+        .btn:hover, .btn:active {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn.secondary {
+            background: #6c757d;
+        }
+
+        .btn.danger {
+            background: #dc3545;
+        }
+
+        .screen {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .player-setup {
+            margin-bottom: 20px;
+        }
+
+        .player-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .player-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .player-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .game-board {
+            overflow-x: auto;
+        }
+
+        .players-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .player-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .player-card.winner {
+            border: 3px solid #ffd700;
+            background: linear-gradient(135deg, #fff9c4 0%, #fff 100%);
+        }
+
+        .crown {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 24px;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #764ba2;
+        }
+
+        .phase-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .phase-display {
+            font-size: 16px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .phase-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .phase-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .phase-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .score-section {
+            margin-bottom: 15px;
+        }
+
+        .score-display {
+            font-size: 20px;
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+
+        .score-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .score-input input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .camera-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .settings-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        .form-group input {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .camera-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+        }
+
+        .camera-modal.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .camera-content {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+        }
+
+        #cameraVideo {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 10px;
+        }
+
+        .camera-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .players-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .players-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Phase 10 Scorer</h1>
+            <div class="nav-buttons">
+                <button class="btn" onclick="showScreen('setup')">New Game</button>
+                <button class="btn" onclick="showScreen('game')" id="gameBtn" style="display: none;">Game</button>
+                <button class="btn secondary" onclick="showScreen('settings')">Settings</button>
+            </div>
+        </div>
+
+        <!-- Setup Screen -->
+        <div class="screen active" id="setupScreen">
+            <h2>Setup New Game</h2>
+            <div class="player-setup">
+                <div class="player-input">
+                    <input type="text" id="playerNameInput" placeholder="Enter player name" maxlength="20">
+                    <button class="btn" onclick="addPlayer()">Add</button>
+                </div>
+                <div class="player-list" id="playerList"></div>
+                <button class="btn" onclick="startGame()" id="startGameBtn" style="display: none;">Start Game</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen" id="gameScreen">
+            <div class="players-grid" id="playersGrid"></div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn danger" onclick="endGame()">End Game</button>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div class="screen" id="settingsScreen">
+            <h2>Settings</h2>
+            <div class="settings-form">
+                <div class="form-group">
+                    <label for="jokerCost">Joker Card Cost:</label>
+                    <input type="number" id="jokerCost" value="25" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="skipCost">Skip Card Cost:</label>
+                    <input type="number" id="skipCost" value="15" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="numberCost">Number Card Cost (1-9):</label>
+                    <input type="number" id="numberCost" value="5" min="0">
+                </div>
+                <div class="form-group">
+                    <label for="highCost">High Number Card Cost (10-12):</label>
+                    <input type="number" id="highCost" value="10" min="0">
+                </div>
+                <button class="btn" onclick="saveSettings()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Camera Modal -->
+    <div class="camera-modal" id="cameraModal">
+        <div class="camera-content">
+            <h3>Take Photo of Cards</h3>
+            <video id="cameraVideo" autoplay playsinline></video>
+            <canvas id="cameraCanvas" style="display: none;"></canvas>
+            <div class="camera-controls">
+                <button class="btn" onclick="capturePhoto()">Capture</button>
+                <button class="btn secondary" onclick="closeCameraModal()">Cancel</button>
+            </div>
+            <div id="photoResult" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <script>
+        let players = [];
+        let gameActive = false;
+        let currentCameraPlayer = null;
+        let settings = {
+            jokerCost: 25,
+            skipCost: 15,
+            numberCost: 5,
+            highCost: 10
+        };
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const saved = localStorage.getItem('phase10Settings');
+            if (saved) {
+                settings = { ...settings, ...JSON.parse(saved) };
+                document.getElementById('jokerCost').value = settings.jokerCost;
+                document.getElementById('skipCost').value = settings.skipCost;
+                document.getElementById('numberCost').value = settings.numberCost;
+                document.getElementById('highCost').value = settings.highCost;
+            }
+        }
+
+        function saveSettings() {
+            settings.jokerCost = parseInt(document.getElementById('jokerCost').value);
+            settings.skipCost = parseInt(document.getElementById('skipCost').value);
+            settings.numberCost = parseInt(document.getElementById('numberCost').value);
+            settings.highCost = parseInt(document.getElementById('highCost').value);
+            
+            localStorage.setItem('phase10Settings', JSON.stringify(settings));
+            alert('Settings saved!');
+        }
+
+        function showScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenName + 'Screen').classList.add('active');
+        }
+
+        function addPlayer() {
+            const input = document.getElementById('playerNameInput');
+            const name = input.value.trim();
+            
+            if (name && !players.find(p => p.name === name)) {
+                players.push({
+                    name: name,
+                    phase: 1,
+                    score: 0
+                });
+                input.value = '';
+                updatePlayerList();
+            }
+        }
+
+        function removePlayer(index) {
+            players.splice(index, 1);
+            updatePlayerList();
+        }
+
+        function updatePlayerList() {
+            const list = document.getElementById('playerList');
+            list.innerHTML = '';
+            
+            players.forEach((player, index) => {
+                const item = document.createElement('div');
+                item.className = 'player-item';
+                item.innerHTML = `
+                    <span>${player.name}</span>
+                    <button class="btn danger" onclick="removePlayer(${index})">Remove</button>
+                `;
+                list.appendChild(item);
+            });
+            
+            document.getElementById('startGameBtn').style.display = 
+                players.length >= 2 ? 'block' : 'none';
+        }
+
+        function startGame() {
+            if (players.length < 2) return;
+            
+            gameActive = true;
+            document.getElementById('gameBtn').style.display = 'inline-block';
+            showScreen('game');
+            updateGameBoard();
+        }
+
+        function updateGameBoard() {
+            const grid = document.getElementById('playersGrid');
+            grid.innerHTML = '';
+            
+            // Determine winner (highest phase, then lowest score)
+            let winner = players.reduce((prev, current) => {
+                if (current.phase > prev.phase) return current;
+                if (current.phase === prev.phase && current.score < prev.score) return current;
+                return prev;
+            });
+            
+            players.forEach((player, index) => {
+                const card = document.createElement('div');
+                card.className = `player-card ${player === winner ? 'winner' : ''}`;
+                card.innerHTML = `
+                    ${player === winner ? '<div class="crown">👑</div>' : ''}
+                    <div class="player-name">${player.name}</div>
+                    <div class="phase-info">
+                        <div class="phase-display">Phase: ${player.phase}/10</div>
+                        <div class="phase-controls">
+                            <button class="phase-btn" onclick="changePhase(${index}, -1)" ${player.phase <= 1 ? 'disabled' : ''}>-</button>
+                            <button class="phase-btn" onclick="changePhase(${index}, 1)" ${player.phase >= 10 ? 'disabled' : ''}>+</button>
+                        </div>
+                    </div>
+                    <div class="score-section">
+                        <div class="score-display">Score: ${player.score}</div>
+                        <div class="score-input">
+                            <input type="number" id="scoreInput${index}" placeholder="Add points" min="0">
+                            <button class="btn" onclick="addScore(${index})">Add</button>
+                        </div>
+                        <button class="camera-btn" onclick="openCamera(${index})">📷 Photo Score</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function changePhase(playerIndex, change) {
+            const newPhase = players[playerIndex].phase + change;
+            if (newPhase >= 1 && newPhase <= 10) {
+                players[playerIndex].phase = newPhase;
+                updateGameBoard();
+            }
+        }
+
+        function addScore(playerIndex) {
+            const input = document.getElementById(`scoreInput${playerIndex}`);
+            const points = parseInt(input.value);
+            
+            if (points && points > 0) {
+                players[playerIndex].score += points;
+                input.value = '';
+                updateGameBoard();
+            }
+        }
+
+        function openCamera(playerIndex) {
+            currentCameraPlayer = playerIndex;
+            const modal = document.getElementById('cameraModal');
+            const video = document.getElementById('cameraVideo');
+            
+            navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    facingMode: 'environment',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                } 
+            })
+            .then(stream => {
+                video.srcObject = stream;
+                modal.classList.add('active');
+            })
+            .catch(err => {
+                alert('Camera access denied or not available');
+                console.error('Camera error:', err);
+            });
+        }
+
+        function closeCameraModal() {
+            const modal = document.getElementById('cameraModal');
+            const video = document.getElementById('cameraVideo');
+            
+            if (video.srcObject) {
+                video.srcObject.getTracks().forEach(track => track.stop());
+            }
+            
+            modal.classList.remove('active');
+            document.getElementById('photoResult').innerHTML = '';
+            currentCameraPlayer = null;
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+            
+            // Show captured image and manual scoring interface
+            const photoResult = document.getElementById('photoResult');
+            photoResult.innerHTML = `
+                <h4>Photo captured! Manual scoring:</h4>
+                <div style="margin: 10px 0;">
+                    <label>Number cards (1-9): <input type="number" id="numberCards" min="0" value="0"> × ${settings.numberCost} = <span id="numberTotal">0</span></label>
+                </div>
+                <div style="margin: 10px 0;">
+                    <label>High cards (10-12): <input type="number" id="highCards" min="0" value="0"> × ${settings.highCost} = <span id="highTotal">0</span></label>
+                </div>
+                <div style="margin: 10px 0;">
+                    <label>Skip cards: <input type="number" id="skipCards" min="0" value="0"> × ${settings.skipCost} = <span id="skipTotal">0</span></label>
+                </div>
+                <div style="margin: 10px 0;">
+                    <label>Wild cards: <input type="number" id="jokerCards" min="0" value="0"> × ${settings.jokerCost} = <span id="jokerTotal">0</span></label>
+                </div>
+                <div style="margin: 15px 0; font-weight: bold;">
+                    Total: <span id="grandTotal">0</span>
+                </div>
+                <button class="btn" onclick="applyPhotoScore()">Apply Score</button>
+            `;
+            
+            // Add event listeners for real-time calculation
+            ['numberCards', 'highCards', 'skipCards', 'jokerCards'].forEach(id => {
+                document.getElementById(id).addEventListener('input', calculatePhotoScore);
+            });
+        }
+
+        function calculatePhotoScore() {
+            const numberCards = parseInt(document.getElementById('numberCards').value) || 0;
+            const highCards = parseInt(document.getElementById('highCards').value) || 0;
+            const skipCards = parseInt(document.getElementById('skipCards').value) || 0;
+            const jokerCards = parseInt(document.getElementById('jokerCards').value) || 0;
+            
+            const numberTotal = numberCards * settings.numberCost;
+            const highTotal = highCards * settings.highCost;
+            const skipTotal = skipCards * settings.skipCost;
+            const jokerTotal = jokerCards * settings.jokerCost;
+            const grandTotal = numberTotal + highTotal + skipTotal + jokerTotal;
+            
+            document.getElementById('numberTotal').textContent = numberTotal;
+            document.getElementById('highTotal').textContent = highTotal;
+            document.getElementById('skipTotal').textContent = skipTotal;
+            document.getElementById('jokerTotal').textContent = jokerTotal;
+            document.getElementById('grandTotal').textContent = grandTotal;
+        }
+
+        function applyPhotoScore() {
+            const total = parseInt(document.getElementById('grandTotal').textContent);
+            if (total > 0 && currentCameraPlayer !== null) {
+                players[currentCameraPlayer].score += total;
+                closeCameraModal();
+                updateGameBoard();
+            }
+        }
+
+        function endGame() {
+            if (confirm('Are you sure you want to end the game?')) {
+                players = [];
+                gameActive = false;
+                document.getElementById('gameBtn').style.display = 'none';
+                showScreen('setup');
+                updatePlayerList();
+            }
+        }
+
+        // Handle Enter key for player input
+        document.getElementById('playerNameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addPlayer();
+            }
+        });
+
+        // Initialize
+        loadSettings();
+    </script>
+</body>
+</html>
