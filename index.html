@@ -567,7 +567,8 @@
         <div class="screen" id="gameScreen">
             <div class="round-info" style="text-align: center; margin-bottom: 15px; color: white;">
                 <h3>Round <span id="currentRound">1</span></h3>
-                <p style="font-size: 14px; margin: 5px 0;">Round advances when all players have activity</p>
+                <p style="font-size: 14px; margin: 5px 0;">All players need activity to advance</p>
+                <button class="btn" onclick="nextRound()" id="nextRoundBtn" disabled style="margin-top: 10px;">Next Round</button>
             </div>
             <div class="players-grid" id="playersGrid"></div>
         </div>
@@ -749,6 +750,12 @@
             document.getElementById('mobileGameBtn').style.display = 'block';
             document.getElementById('mobileAnalysisBtn').style.display = 'block';
             document.getElementById('mobileEndGameBtn').style.display = 'block';
+            
+            // Initialize next round button as disabled
+            const nextRoundBtn = document.getElementById('nextRoundBtn');
+            nextRoundBtn.disabled = true;
+            nextRoundBtn.style.opacity = '0.5';
+            
             showScreen('game');
             updateGameBoard();
         }
@@ -826,8 +833,14 @@
                 return scoreIncreased || phaseAdvanced;
             });
             
+            // Enable/disable next round button based on all players having activity
+            const nextRoundBtn = document.getElementById('nextRoundBtn');
             if (allPlayersActive) {
-                nextRound();
+                nextRoundBtn.disabled = false;
+                nextRoundBtn.style.opacity = '1';
+            } else {
+                nextRoundBtn.disabled = true;
+                nextRoundBtn.style.opacity = '0.5';
             }
         }
 
@@ -854,6 +867,12 @@
             });
             
             currentRound++;
+            
+            // Disable next round button for new round
+            const nextRoundBtn = document.getElementById('nextRoundBtn');
+            nextRoundBtn.disabled = true;
+            nextRoundBtn.style.opacity = '0.5';
+            
             updateGameBoard();
         }
 
