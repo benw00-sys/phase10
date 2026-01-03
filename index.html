@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            background: #1a1a1a;
             min-height: 100vh;
             color: #333;
         }
@@ -25,20 +25,18 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #ff4757 0%, #ff3742 100%);
             color: white;
             padding: 12px;
             border-radius: 12px;
             margin-bottom: 15px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .header h1 {
             color: white;
             font-size: 22px;
             margin-bottom: 8px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .nav-buttons {
@@ -49,7 +47,7 @@
         }
 
         .btn {
-            background: linear-gradient(135deg, #ffa502 0%, #ff6348 100%);
+            background: #ff6348;
             color: white;
             border: none;
             padding: 8px 16px;
@@ -77,6 +75,13 @@
 
         .screen {
             display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        #setupScreen, #settingsScreen {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
             padding: 15px;
@@ -84,8 +89,12 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .screen.active {
-            display: block;
+        #gameScreen {
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            margin-bottom: 15px;
+            box-shadow: none;
         }
 
         .player-setup {
@@ -133,51 +142,64 @@
         }
 
         .player-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            border-radius: 12px;
-            padding: 12px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+            background: #ffffff;
+            border-radius: 15px;
+            /*padding: 12px;*/
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             position: relative;
-            border: 2px solid transparent;
+            border: none;
+            overflow: hidden;
         }
 
         .player-card.winner {
-            border: 3px solid #ffd700;
-            background: linear-gradient(135deg, #fff9c4 0%, #ffffff 100%);
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            border: none;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .crown {
             position: absolute;
             top: -8px;
-            right: -8px;
+            left: 50%;
+            transform: translateX(-50%);
             font-size: 20px;
             color: #ffd700;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .player-name {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin: 0;
+            padding: 12px;
             color: #2f3542;
             text-align: center;
+            background: rgba(255, 255, 255, 0.8);
         }
 
         .phase-info {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #3742fa 0%, #2f3542 100%);
+            justify-content: center;
+            align-items: stretch;
+            margin: 0;
+            background: #3742fa;
             color: white;
-            padding: 6px 10px;
-            border-radius: 8px;
+            padding: 0;
+            border-radius: 0;
+            overflow: hidden;
+            min-height: 44px;
         }
 
         .phase-display {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
+            flex: 1;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            background: #3742fa;
         }
 
         .phase-controls {
@@ -189,12 +211,23 @@
             background: linear-gradient(135deg, #2ed573 0%, #1e90ff 100%);
             color: white;
             border: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 14px;
             font-weight: bold;
+            flex: 0 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .phase-btn.minus {
+            background: #ff4757;
+            border-radius: 0;
+        }
+
+        .phase-btn.plus {
+            background: #28a745;
+            border-radius: 0;
         }
 
         .phase-btn:disabled {
@@ -203,49 +236,62 @@
         }
 
         .score-section {
-            margin-bottom: 10px;
+            margin: 0;
+            padding: 0;
         }
 
         .score-display {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: bold;
             color: #ff4757;
-            margin-bottom: 8px;
+            margin: 0;
             text-align: center;
-            background: linear-gradient(135deg, #ffe4e6 0%, #ffffff 100%);
-            padding: 4px 8px;
-            border-radius: 6px;
+            background: #ffe4e6;
+            padding: 12px;
         }
 
         .score-input {
             display: flex;
-            gap: 6px;
-            margin-bottom: 8px;
+            margin: 0;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: none;
+            width: 100%;
         }
 
         .score-input input {
-            flex: 1;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 12px;
+            width: 50%;
+            flex: none;
+            padding: 12px 16px;
+            border: none;
+            font-size: 16px;
+            background: white;
+            outline: none;
+            box-sizing: border-box;
         }
 
         .score-input .btn {
-            padding: 6px 12px;
-            font-size: 11px;
+            width: 50%;
+            flex: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            border-radius: 0;
+            background: #ff6348;
+            margin: 0;
+            box-shadow: none;
+            box-sizing: border-box;
         }
 
         .camera-btn {
-            background: linear-gradient(135deg, #1e90ff 0%, #3742fa 100%);
+            background: #1e90ff;
             color: white;
             border: none;
-            padding: 6px 12px;
-            border-radius: 15px;
+            padding: 12px;
+            border-radius: 0;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 14px;
             width: 100%;
-            margin-top: 4px;
+            margin: 0;
         }
 
         .settings-form {
@@ -316,19 +362,58 @@
         @media (max-width: 480px) {
             .players-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 8px;
+                gap: 6px;
             }
             
             .player-card {
-                padding: 8px;
+                /*padding: 6px;*/
+                min-width: 0;
             }
             
             .player-name {
-                font-size: 14px;
+                font-size: 13px;
+                margin-bottom: 6px;
             }
             
             .score-display {
-                font-size: 14px;
+                font-size: 13px;
+            }
+            
+            .phase-info {
+                padding: 0;
+                min-height: 28px;
+            }
+            
+            .phase-display {
+                font-size: 12px;
+            }
+            
+            .phase-btn {
+                width: 25px;
+                height: 20px;
+                font-size: 10px;
+                flex: 0 0 25px;
+            }
+            
+            .container {
+                padding: 6px;
+            }
+            
+            .score-input {
+                width: 100%;
+            }
+            
+            .score-input input {
+                width: 50%;
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            .score-input .btn {
+                width: 50%;
+                padding: 6px 12px;
+                font-size: 11px;
+                border-radius: 0;
             }
         }
 
@@ -354,6 +439,7 @@
             <div class="nav-buttons">
                 <button class="btn" onclick="showScreen('setup')">New Game</button>
                 <button class="btn" onclick="showScreen('game')" id="gameBtn" style="display: none;">Game</button>
+                <button class="btn" onclick="showScreen('analysis')" id="analysisBtn" style="display: none;">Analysis</button>
                 <button class="btn secondary" onclick="showScreen('settings')">Settings</button>
             </div>
         </div>
@@ -373,10 +459,20 @@
 
         <!-- Game Screen -->
         <div class="screen" id="gameScreen">
+            <div class="round-info" style="text-align: center; margin-bottom: 15px; color: white;">
+                <h3>Round <span id="currentRound">1</span></h3>
+                <p style="font-size: 14px; margin: 5px 0;">Round advances when all players have activity</p>
+            </div>
             <div class="players-grid" id="playersGrid"></div>
             <div style="text-align: center; margin-top: 20px;">
                 <button class="btn danger" onclick="endGame()">End Game</button>
             </div>
+        </div>
+
+        <!-- Analysis Screen -->
+        <div class="screen" id="analysisScreen">
+            <h2>Game Analysis</h2>
+            <div id="analysisContent"></div>
         </div>
 
         <!-- Settings Screen -->
@@ -422,6 +518,8 @@
         let players = [];
         let gameActive = false;
         let currentCameraPlayer = null;
+        let currentRound = 1;
+        let gameHistory = [];
         let settings = {
             jokerCost: 25,
             skipCost: 15,
@@ -456,6 +554,10 @@
                 screen.classList.remove('active');
             });
             document.getElementById(screenName + 'Screen').classList.add('active');
+            
+            if (screenName === 'analysis') {
+                showAnalysis();
+            }
         }
 
         function addPlayer() {
@@ -512,7 +614,20 @@
             }
             
             gameActive = true;
+            currentRound = 1;
+            gameHistory = [];
+            
+            // Initialize players with round tracking
+            players.forEach(player => {
+                player.roundScores = [0]; // Track score per round
+                player.cardData = []; // Track card data per round
+                player.startingPhase = player.phase; // Track starting phase for round
+                player.startingScore = player.score; // Track starting score for round
+                player.hasActivity = false; // Track if player has activity this round
+            });
+            
             document.getElementById('gameBtn').style.display = 'inline-block';
+            document.getElementById('analysisBtn').style.display = 'inline-block';
             showScreen('game');
             updateGameBoard();
         }
@@ -520,6 +635,17 @@
         function updateGameBoard() {
             const grid = document.getElementById('playersGrid');
             grid.innerHTML = '';
+            
+            document.getElementById('currentRound').textContent = currentRound;
+            
+            // Check round completion status
+            const playersWithActivity = players.filter(player => {
+                const scoreIncreased = player.score > player.startingScore;
+                const phaseAdvanced = player.phase > player.startingPhase;
+                return scoreIncreased || phaseAdvanced;
+            }).length;
+            
+            const roundStatus = `Round ${currentRound} - ${playersWithActivity}/${players.length} players active`;
             
             // Determine winner (highest phase, then lowest score)
             let winner = players.reduce((prev, current) => {
@@ -529,17 +655,19 @@
             });
             
             players.forEach((player, index) => {
+                const scoreIncreased = player.score > player.startingScore;
+                const phaseAdvanced = player.phase > player.startingPhase;
+                const hasActivity = scoreIncreased || phaseAdvanced;
+                
                 const card = document.createElement('div');
                 card.className = `player-card ${player === winner ? 'winner' : ''}`;
                 card.innerHTML = `
                     ${player === winner ? '<div class="crown">👑</div>' : ''}
-                    <div class="player-name">${player.name}</div>
+                    <div class="player-name">${player.name} ${hasActivity ? '✓' : '⏳'}</div>
                     <div class="phase-info">
+                        <button class="phase-btn minus" onclick="changePhase(${index}, -1)" ${player.phase <= 1 ? 'disabled' : ''}>-</button>
                         <div class="phase-display">Phase: ${player.phase}/10</div>
-                        <div class="phase-controls">
-                            <button class="phase-btn" onclick="changePhase(${index}, -1)" ${player.phase <= 1 ? 'disabled' : ''}>-</button>
-                            <button class="phase-btn" onclick="changePhase(${index}, 1)" ${player.phase >= 10 ? 'disabled' : ''}>+</button>
-                        </div>
+                        <button class="phase-btn plus" onclick="changePhase(${index}, 1)" ${player.phase >= 10 ? 'disabled' : ''}>+</button>
                     </div>
                     <div class="score-section">
                         <div class="score-display">Score: ${player.score}</div>
@@ -554,11 +682,51 @@
             });
         }
 
+        function checkRoundComplete() {
+            // Check if all players have either increased score or moved phase
+            const allPlayersActive = players.every(player => {
+                const scoreIncreased = player.score > player.startingScore;
+                const phaseAdvanced = player.phase > player.startingPhase;
+                return scoreIncreased || phaseAdvanced;
+            });
+            
+            if (allPlayersActive) {
+                nextRound();
+            }
+        }
+
+        function nextRound() {
+            // Save current round data
+            const roundData = {
+                round: currentRound,
+                players: players.map(p => ({
+                    name: p.name,
+                    phase: p.phase,
+                    score: p.score,
+                    roundScore: p.score - p.startingScore,
+                    phaseAdvanced: p.phase > p.startingPhase
+                }))
+            };
+            gameHistory.push(roundData);
+            
+            // Update player round tracking
+            players.forEach(player => {
+                player.roundScores.push(player.score);
+                player.startingScore = player.score; // Reset for next round
+                player.startingPhase = player.phase; // Reset for next round
+                player.hasActivity = false; // Reset for next round
+            });
+            
+            currentRound++;
+            updateGameBoard();
+        }
+
         function changePhase(playerIndex, change) {
             const newPhase = players[playerIndex].phase + change;
             if (newPhase >= 1 && newPhase <= 10) {
                 players[playerIndex].phase = newPhase;
                 updateGameBoard();
+                checkRoundComplete();
             }
         }
 
@@ -570,6 +738,7 @@
                 players[playerIndex].score += points;
                 input.value = '';
                 updateGameBoard();
+                checkRoundComplete();
             }
         }
 
@@ -667,17 +836,97 @@
         function applyPhotoScore() {
             const total = parseInt(document.getElementById('grandTotal').textContent);
             if (total > 0 && currentCameraPlayer !== null) {
+                const cardData = {
+                    round: currentRound,
+                    numberCards: parseInt(document.getElementById('numberCards').value) || 0,
+                    highCards: parseInt(document.getElementById('highCards').value) || 0,
+                    skipCards: parseInt(document.getElementById('skipCards').value) || 0,
+                    jokerCards: parseInt(document.getElementById('jokerCards').value) || 0,
+                    total: total
+                };
+                
                 players[currentCameraPlayer].score += total;
+                players[currentCameraPlayer].cardData.push(cardData);
+                
                 closeCameraModal();
                 updateGameBoard();
+                checkRoundComplete();
             }
+        }
+
+        function showAnalysis() {
+            const content = document.getElementById('analysisContent');
+            let html = '<div style="color: #333;">';
+            
+            // Game Overview
+            html += `<h3>Game Overview</h3>`;
+            html += `<p>Rounds Played: ${currentRound}</p>`;
+            html += `<p>Players: ${players.length}</p><br>`;
+            
+            // Round by Round Analysis
+            html += `<h3>Round History</h3>`;
+            gameHistory.forEach(round => {
+                html += `<h4>Round ${round.round}</h4>`;
+                html += `<table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">`;
+                html += `<tr style="background: #f0f0f0;"><th style="padding: 8px; border: 1px solid #ddd;">Player</th><th style="padding: 8px; border: 1px solid #ddd;">Phase</th><th style="padding: 8px; border: 1px solid #ddd;">Round Score</th><th style="padding: 8px; border: 1px solid #ddd;">Total Score</th></tr>`;
+                round.players.forEach(p => {
+                    html += `<tr><td style="padding: 8px; border: 1px solid #ddd;">${p.name}</td><td style="padding: 8px; border: 1px solid #ddd;">${p.phase}</td><td style="padding: 8px; border: 1px solid #ddd;">${p.roundScore}</td><td style="padding: 8px; border: 1px solid #ddd;">${p.score}</td></tr>`;
+                });
+                html += `</table>`;
+            });
+            
+            // Card Analysis
+            html += `<h3>Card Analysis</h3>`;
+            let totalCards = { number: 0, high: 0, skip: 0, joker: 0 };
+            let cardCounts = 0;
+            
+            players.forEach(player => {
+                player.cardData.forEach(data => {
+                    totalCards.number += data.numberCards;
+                    totalCards.high += data.highCards;
+                    totalCards.skip += data.skipCards;
+                    totalCards.joker += data.jokerCards;
+                    cardCounts++;
+                });
+            });
+            
+            if (cardCounts > 0) {
+                html += `<p>Most Common Leftover Cards:</p>`;
+                html += `<ul>`;
+                html += `<li>Number Cards (1-9): ${totalCards.number} total</li>`;
+                html += `<li>High Cards (10-12): ${totalCards.high} total</li>`;
+                html += `<li>Skip Cards: ${totalCards.skip} total</li>`;
+                html += `<li>Wild Cards: ${totalCards.joker} total</li>`;
+                html += `</ul>`;
+                
+                const mostCommon = Object.entries(totalCards).reduce((a, b) => totalCards[a[0]] > totalCards[b[0]] ? a : b);
+                html += `<p><strong>Most commonly left over: ${mostCommon[0]} cards (${mostCommon[1]} total)</strong></p>`;
+            } else {
+                html += `<p>No photo scoring data available yet.</p>`;
+            }
+            
+            // Player Performance
+            html += `<h3>Player Performance</h3>`;
+            players.forEach(player => {
+                const avgRoundScore = player.roundScores.length > 1 ? 
+                    (player.score / (player.roundScores.length - 1)).toFixed(1) : 0;
+                html += `<h4>${player.name}</h4>`;
+                html += `<p>Current Phase: ${player.phase}/10 | Total Score: ${player.score} | Avg per Round: ${avgRoundScore}</p>`;
+                html += `<p>Photo Scores Used: ${player.cardData.length}</p>`;
+            });
+            
+            html += '</div>';
+            content.innerHTML = html;
         }
 
         function endGame() {
             if (confirm('Are you sure you want to end the game?')) {
                 players = [];
                 gameActive = false;
+                currentRound = 1;
+                gameHistory = [];
                 document.getElementById('gameBtn').style.display = 'none';
+                document.getElementById('analysisBtn').style.display = 'none';
                 showScreen('setup');
                 updatePlayerList();
             }
