@@ -25,18 +25,33 @@
         }
 
         .header {
+            background: transparent;
             color: white;
             padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            border-radius: 0;
+            /*margin-bottom: 15px;*/
             text-align: center;
+            box-shadow: none;
+            border: none;
+            position: relative;
         }
 
-        .header h1 {
+        .header img {
+            max-height: 60px;
+            width: auto;
+        }
+
+        .hamburger {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
             color: white;
-            font-size: 22px;
-            margin-bottom: 8px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
         }
 
         .nav-buttons {
@@ -44,6 +59,53 @@
             gap: 8px;
             justify-content: center;
             flex-wrap: wrap;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        .mobile-menu-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .mobile-menu-content h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .mobile-menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .mobile-menu-buttons .btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+        }
+
+        .close-menu {
+            background: #6c757d;
+            margin-top: 10px;
         }
 
         .btn {
@@ -113,6 +175,25 @@
             border: 2px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
+        }
+
+        .player-input input:disabled {
+            background-color: #f5f5f5;
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .player-input .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        #startGameBtn {
+            margin-top: 15px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .player-list {
@@ -360,6 +441,14 @@
         }
 
         @media (max-width: 480px) {
+            .hamburger {
+                display: block;
+            }
+            
+            .nav-buttons {
+                display: none;
+            }
+            
             .players-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 6px;
@@ -390,7 +479,7 @@
             
             .phase-btn {
                 width: 25px;
-                height: 20px;
+                /*height: 20px;*/
                 font-size: 10px;
                 flex: 0 0 25px;
             }
@@ -401,6 +490,7 @@
             
             .score-input {
                 width: 100%;
+                height: 40px;
             }
             
             .score-input input {
@@ -435,12 +525,28 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Phase 10 Scorer</h1>
+            <img src="logo.png" alt="Phase 10 Scorer" />
+            <button class="hamburger" onclick="toggleMobileMenu()">☰</button>
             <div class="nav-buttons">
                 <button class="btn" onclick="showScreen('setup')">New Game</button>
                 <button class="btn" onclick="showScreen('game')" id="gameBtn" style="display: none;">Game</button>
                 <button class="btn" onclick="showScreen('analysis')" id="analysisBtn" style="display: none;">Analysis</button>
                 <button class="btn secondary" onclick="showScreen('settings')">Settings</button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-content">
+                <h3>Menu</h3>
+                <div class="mobile-menu-buttons">
+                    <button class="btn" onclick="mobileMenuAction('setup')">New Game</button>
+                    <button class="btn" onclick="mobileMenuAction('game')" id="mobileGameBtn" style="display: none;">Game</button>
+                    <button class="btn" onclick="mobileMenuAction('analysis')" id="mobileAnalysisBtn" style="display: none;">Analysis</button>
+                    <button class="btn secondary" onclick="mobileMenuAction('settings')">Settings</button>
+                    <button class="btn danger" onclick="mobileMenuAction('endGame')" id="mobileEndGameBtn" style="display: none;">End Game</button>
+                    <button class="btn close-menu" onclick="toggleMobileMenu()">Close</button>
+                </div>
             </div>
         </div>
 
@@ -464,9 +570,6 @@
                 <p style="font-size: 14px; margin: 5px 0;">Round advances when all players have activity</p>
             </div>
             <div class="players-grid" id="playersGrid"></div>
-            <div style="text-align: center; margin-top: 20px;">
-                <button class="btn danger" onclick="endGame()">End Game</button>
-            </div>
         </div>
 
         <!-- Analysis Screen -->
@@ -565,8 +668,7 @@
             const name = input.value.trim();
             
             if (players.length >= 6) {
-                alert('Maximum 6 players allowed in Phase 10!');
-                return;
+                return; // Don't add if at max capacity
             }
             
             if (name && !players.find(p => p.name === name)) {
@@ -587,6 +689,9 @@
 
         function updatePlayerList() {
             const list = document.getElementById('playerList');
+            const input = document.getElementById('playerNameInput');
+            const addButton = input.nextElementSibling;
+            
             list.innerHTML = '';
             
             players.forEach((player, index) => {
@@ -599,8 +704,21 @@
                 list.appendChild(item);
             });
             
-            document.getElementById('startGameBtn').style.display = 
-                players.length >= 2 ? 'block' : 'none';
+            // Disable/enable input and button based on player count
+            if (players.length >= 6) {
+                input.disabled = true;
+                input.placeholder = 'Maximum 6 players reached';
+                addButton.disabled = true;
+                addButton.textContent = 'Full';
+            } else {
+                input.disabled = false;
+                input.placeholder = 'Enter player name';
+                addButton.disabled = false;
+                addButton.textContent = 'Add';
+            }
+            
+            const startBtn = document.getElementById('startGameBtn');
+            startBtn.style.display = players.length >= 2 ? 'block' : 'none';
         }
 
         function startGame() {
@@ -628,8 +746,26 @@
             
             document.getElementById('gameBtn').style.display = 'inline-block';
             document.getElementById('analysisBtn').style.display = 'inline-block';
+            document.getElementById('mobileGameBtn').style.display = 'block';
+            document.getElementById('mobileAnalysisBtn').style.display = 'block';
+            document.getElementById('mobileEndGameBtn').style.display = 'block';
             showScreen('game');
             updateGameBoard();
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('active');
+        }
+
+        function mobileMenuAction(action) {
+            toggleMobileMenu();
+            
+            if (action === 'endGame') {
+                endGame();
+            } else {
+                showScreen(action);
+            }
         }
 
         function updateGameBoard() {
@@ -927,6 +1063,9 @@
                 gameHistory = [];
                 document.getElementById('gameBtn').style.display = 'none';
                 document.getElementById('analysisBtn').style.display = 'none';
+                document.getElementById('mobileGameBtn').style.display = 'none';
+                document.getElementById('mobileAnalysisBtn').style.display = 'none';
+                document.getElementById('mobileEndGameBtn').style.display = 'none';
                 showScreen('setup');
                 updatePlayerList();
             }
